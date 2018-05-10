@@ -1,3 +1,5 @@
+/* global alert */
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, TextInput } from 'react-native'
@@ -6,7 +8,7 @@ import api from '../utils/api'
 import StyledTextInput from './StyledTextInput'
 import TextButton from './TextButton'
 
-class NewDecks extends Component {
+class AddDeck extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -14,18 +16,35 @@ class NewDecks extends Component {
     }
   }
 
+  validateTitle (title) {
+    return api.getDeck(title)
+      .then(result => {
+        if (title.length <= 0) {
+          return Promise.reject('new deck title is empty!') // eslint-disable-line
+        }
+        if (result) {
+          return Promise.reject('title already exists!') // eslint-disable-line
+        }
+        return true
+      })
+  }
+
   saveNewDeck () {
     const { dispatch, navigation } = this.props
-    api.saveDeckTitle(this.state.deckTitle)
+    const title = this.state.deckTitle
+
+    this.validateTitle(title)
+      .then(() => api.saveDeckTitle(title))
       .then(api.getDecks)
       .then(data => dispatch(storeDecks(data)))
-      .then(() => navigation.navigate('DecksView'))
+      .then(() => this.setState({ deckTitle: '' }))
+      .then(() => navigation.navigate('ViewDecks'))
+      .catch(invalidTitle => alert(invalidTitle))
   }
 
   render () {
     return (
       <View>
-        <Text></Text>
         <StyledTextInput
           placeholder='new deck title!'
           onChangeText={(text) => this.setState({ deckTitle: text })}
@@ -37,4 +56,4 @@ class NewDecks extends Component {
   }
 }
 
-export default connect()(NewDecks)
+export default connect()(AddDeck)
