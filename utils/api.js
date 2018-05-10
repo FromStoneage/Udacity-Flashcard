@@ -16,8 +16,8 @@ const DUMMY_DATA = {
       }
     ]
   },
-  JavaScript: {
-    title: 'JavaScript',
+  Redux: {
+    title: 'Redux',
     questions: [
       {
         question: 'What is the meaning of life',
@@ -31,15 +31,15 @@ function setDummyData () {
   return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify(DUMMY_DATA))
 }
 
-function getDecksAsArray () {
+function getDecksFromAsync () {
   return AsyncStorage.getItem(DECK_STORAGE_KEY)
     .then(dataString => JSON.parse(dataString))
     .then(data => data && Object.values(data))
 }
 
 function getDecks () {
-  return getDecksAsArray()
-    .then(data => (data && data.length > 0) ? data : setDummyData().then(getDecksAsArray))
+  return getDecksFromAsync()
+    .then(data => (data && data.length > 0) ? data : setDummyData().then(getDecksFromAsync))
 }
 
 function getDeck (id) {
@@ -48,12 +48,23 @@ function getDeck (id) {
 }
 
 function saveDeckTitle (title) {
+  return AsyncStorage.mergeItem(DECK_STORAGE_KEY, JSON.stringify({
+    [title]: {
+      title,
+      questions: []
+    }
+  }))
 }
 
 function addCardToDeck (title, card) {
 }
 
+function clearData() {
+  return AsyncStorage.clear()
+}
+
 export default {
+  clearData,
   setDummyData,
   getDecks,
   getDeck,

@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { createBottomTabNavigator , StackNavigator } from 'react-navigation'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import DecksView from './components/DecksView'
-import Decks from './components/Decks'
+import NewDecks from './components/NewDecks'
 
 import reducers from './reducers'
 
@@ -17,8 +17,8 @@ const Tabs = createBottomTabNavigator ({
       tabBarIcon: ({ tintColor }) => <MaterialCommunityIcons name='cards' size={30} color={tintColor} />
     }
   },
-  Decks: {
-    screen: Decks,
+  NewDecks: {
+    screen: NewDecks,
     navigationOptions: {
       tabBarLabel: 'New Deck',
       tabBarIcon: ({ tintColor }) => <MaterialCommunityIcons name='library-plus' size={30} color={tintColor} />
